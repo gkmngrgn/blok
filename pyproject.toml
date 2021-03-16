@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "blok"
+version = "0.1.0"
+description = ""
+authors = ["Gökmen Görgen <gkmngrgn@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+ipython = "^7.21.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
