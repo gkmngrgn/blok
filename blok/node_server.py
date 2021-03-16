@@ -1,16 +1,63 @@
+import typing
 import time
 import hashlib
+from dataclasses import dataclass
 
 
-class Block(object):
-    def __init__(self, index, proof, previous_hash, transactions):
-        self.index = index
-        self.proof = proof
-        self.previous_hash = previous_hash
-        self.transactions = transactions
-        self.timestamp = time.time()
+@dataclass
+class Transaction:
+    sender: int
+    recipient: int
+    amount: int
+
+
+@dataclass
+class Block:
+    index: int
+    proof: int
+    previous_hash: int
+    transactions: typing.List[Transaction]
+    timestamp: float = time.time()
 
     @property
-    def get_block_hash(self):
+    def get_block_hash(self) -> str:
         block_string = f"{self.index}{self.proof}{self.previous_hash}{self.transactions}{self.timestamp}"
         return hashlib.sha256(block_string.encode()).hexdigest()
+
+
+class BlockChain:
+    def __init__(self) -> None:
+        self.chain: typing.List[Block] = []
+        self.current_node_transactions: typing.List[Transaction] = []
+        self.create_genesis_block()
+
+    def create_genesis_block(self) -> None:
+        self.create_new_block(proof=0, previous_hash=0)
+
+    def create_new_block(self, proof: int, previous_hash: int) -> Block:
+        block = Block(
+            index=len(self.chain),
+            proof=proof,
+            previous_hash=previous_hash,
+            transactions=self.current_node_transactions,
+        )
+        self.current_node_transactions = []
+        self.chain.append(block)
+        return block
+
+    def create_new_transaction(self, sender: int, recipient: int, amount: int) -> int:
+        self.current_node_transactions.append(
+            Transaction(sender=sender, recipient=recipient, amount=amount)
+        )
+        return self.get_last_block.index + 1
+
+    @staticmethod
+    def create_proof_of_work(previous_proof: int) -> int:
+        proof: int = previous_proof + 1
+        while (proof + previous_proof) % 7 != 0:
+            proof += 1
+        return proof
+
+    @property
+    def get_last_block(self) -> Block:
+        return self.chain[-1]
