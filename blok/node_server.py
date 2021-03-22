@@ -20,7 +20,7 @@ class Block:
     timestamp: float = time.time()
 
     @property
-    def get_block_hash(self) -> str:
+    def block_hash(self) -> str:
         block_string = f"{self.index}{self.proof}{self.previous_hash}{self.transactions}{self.timestamp}"
         return hashlib.sha256(block_string.encode()).hexdigest()
 
@@ -49,7 +49,7 @@ class BlockChain:
         self.current_node_transactions.append(
             Transaction(sender=sender, recipient=recipient, amount=amount)
         )
-        return self.get_last_block.index + 1
+        return self.last_block.index + 1
 
     @staticmethod
     def create_proof_of_work(previous_proof: int) -> int:
@@ -59,5 +59,5 @@ class BlockChain:
         return proof
 
     @property
-    def get_last_block(self) -> Block:
+    def last_block(self) -> Block:
         return self.chain[-1]
