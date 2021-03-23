@@ -7,7 +7,7 @@ from dataclasses import dataclass
 @dataclass
 class Transaction:
     sender: int
-    recipient: int
+    recipient: str
     amount: int
 
 
@@ -15,7 +15,7 @@ class Transaction:
 class Block:
     index: int
     proof: int
-    previous_hash: int
+    previous_hash: str
     transactions: typing.List[Transaction]
     timestamp: float = time.time()
 
@@ -32,9 +32,9 @@ class BlockChain:
         self.create_genesis_block()
 
     def create_genesis_block(self) -> None:
-        self.create_new_block(proof=0, previous_hash=0)
+        self.create_new_block(proof=0, previous_hash="0")
 
-    def create_new_block(self, proof: int, previous_hash: int) -> Block:
+    def create_new_block(self, proof: int, previous_hash: str) -> Block:
         block = Block(
             index=len(self.chain),
             proof=proof,
@@ -45,7 +45,7 @@ class BlockChain:
         self.chain.append(block)
         return block
 
-    def create_new_transaction(self, sender: int, recipient: int, amount: int) -> int:
+    def create_new_transaction(self, sender: int, recipient: str, amount: int) -> int:
         self.current_node_transactions.append(
             Transaction(sender=sender, recipient=recipient, amount=amount)
         )
@@ -58,6 +58,19 @@ class BlockChain:
             proof += 1
         return proof
 
+    def mine_block(self, miner_address: str) -> typing.Dict[str, typing.Any]:
+        self.create_new_transaction(sender=0, recipient=miner_address, amount=1)
+        last_block = self.last_block
+        last_proof = last_block.proof
+        proof = self.create_proof_of_work(last_proof)
+        last_hash = last_block.block_hash
+        block = self.create_new_block(proof, last_hash)
+        return vars(block)
+
     @property
     def last_block(self) -> Block:
         return self.chain[-1]
+
+    @property
+    def serialized_chain(self) -> typing.List[str]:
+        return [block.block_hash for block in self.chain]

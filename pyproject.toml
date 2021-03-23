@@ -6,10 +6,14 @@ authors = ["Gökmen Görgen <gkmngrgn@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
+Flask = "^1.1.2"
+ipdb = "^0.13.7"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 ipython = "^7.21.0"
+pylint = "^2.7.2"
+black = {version = "^20.8b1", allow-prereleases = true}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
