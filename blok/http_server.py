@@ -1,8 +1,9 @@
 from uuid import uuid4
-from flask import Flask, Response
-from blok.node_server import BlockChain
-from blok.helpers import get_json_response, get_request_data
 
+from flask import Flask, Response
+
+from blok.helpers import get_json_response, get_request_data
+from blok.node_server import BlockChain
 
 app = Flask(__name__)
 blockchain = BlockChain()
@@ -30,7 +31,7 @@ def mine() -> Response:
     return get_json_response(response_data)
 
 
-@app.route("/chain", methods=["GET"])  # type: ignore
+@app.route("/chain/", methods=["GET"])  # type: ignore
 def get_full_chain():
     response_data = {
         "chain": blockchain.serialized_chain,

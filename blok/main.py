@@ -1,5 +1,6 @@
-from blok.http_server import app
 from argparse import ArgumentParser, Namespace
+
+from blok.http_server import app
 
 
 def parse_args() -> Namespace:

@@ -1,7 +1,9 @@
-import typing
-import time
 import hashlib
+import time
+import typing
 from dataclasses import dataclass
+
+from blok.helpers import SerializedData
 
 
 @dataclass
@@ -58,7 +60,7 @@ class BlockChain:
             proof += 1
         return proof
 
-    def mine_block(self, miner_address: str) -> typing.Dict[str, typing.Any]:
+    def mine_block(self, miner_address: str) -> SerializedData:
         self.create_new_transaction(sender=0, recipient=miner_address, amount=1)
         last_block = self.last_block
         last_proof = last_block.proof
@@ -72,5 +74,5 @@ class BlockChain:
         return self.chain[-1]
 
     @property
-    def serialized_chain(self) -> typing.List[str]:
-        return [block.block_hash for block in self.chain]
+    def serialized_chain(self) -> typing.List[SerializedData]:
+        return [vars(block) for block in self.chain]
