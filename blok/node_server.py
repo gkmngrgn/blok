@@ -67,7 +67,9 @@ class BlockChain:
         proof = self.create_proof_of_work(last_proof)
         last_hash = last_block.block_hash
         block = self.create_new_block(proof, last_hash)
-        return vars(block)
+        response = vars(block)
+        response["block_hash"] = block.block_hash
+        return response
 
     @property
     def last_block(self) -> Block:

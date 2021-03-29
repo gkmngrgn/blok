@@ -14,6 +14,7 @@ ipython = "^7.21.0"
 pylint = "^2.7.2"
 black = {version = "^20.8b1", allow-prereleases = true}
 ipdb = "^0.13.7"
+requests = "^2.25.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
