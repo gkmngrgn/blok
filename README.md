@@ -30,7 +30,6 @@ $ poetry run python -m blok.main --debug=true
 ## Code Quality
 
 ```shell
-$ poetry run black .
-$ poetry run isort .
-$ poetry run pyright -p . -w
+$ poetry run pre-commit install
+$ poetry run pre-commit run --all-files
 ```
