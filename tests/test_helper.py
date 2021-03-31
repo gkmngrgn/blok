@@ -1,3 +1,4 @@
+import json
 import typing
 
 import flask
@@ -24,5 +25,7 @@ def send_post_request(
     endpoint: str, data: typing.Dict[str, typing.Any]
 ) -> flask.Response:
     with app.test_client() as client:
-        response = client.post(get_url(endpoint), data=data)
+        response = client.post(
+            get_url(endpoint), data=json.dumps(data), content_type="application/json"
+        )
     return response

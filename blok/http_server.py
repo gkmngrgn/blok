@@ -37,8 +37,3 @@ def chain():
         "chain": blockchain.serialized_chain,
     }
     return get_json_response(response_data)
-
-
-@app.route("/ping/", methods=["GET"])
-def ping():
-    return "OK!"
