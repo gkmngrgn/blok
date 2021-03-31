@@ -12,7 +12,6 @@ Flask = "^1.1.2"
 pytest = "^5.2"
 ipython = "^7.21.0"
 ipdb = "^0.13.7"
-requests = "^2.25.1"
 pre-commit = "^2.11.1"
 
 [build-system]
