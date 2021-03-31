@@ -1,8 +1,9 @@
-from .test_helper import send_get_request
+from .test_helper import send_get_request, server_required
 
 
+@server_required
 def test_first_chain_data():
-    response = send_get_request("/chain/")
+    response = send_get_request("chain")
     assert response.status_code == 200
 
     response_data = response.json()
@@ -16,10 +17,10 @@ def test_first_chain_data():
     assert block["transactions"] == []
 
 
+@server_required
 def test_first_mining():
-    response = send_get_request("/mine/")
+    response = send_get_request("mine")
     assert response.status_code == 200
 
     response_data = response.json()
-    import ipdb; ipdb.set_trace()
     previous_hash = response_data["block_data"]["block_hash"]

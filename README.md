@@ -26,3 +26,11 @@ To run the blockchain server:
 ```shell
 $ poetry run python -m blok.main --debug=true
 ```
+
+## Code Quality
+
+```shell
+$ poetry run black .
+$ poetry run isort .
+$ poetry run pyright -p . -w
+```

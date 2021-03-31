@@ -8,7 +8,7 @@ from blok.helpers import SerializedData
 
 @dataclass
 class Transaction:
-    sender: int
+    sender: str
     recipient: str
     amount: int
 
@@ -47,7 +47,7 @@ class BlockChain:
         self.chain.append(block)
         return block
 
-    def create_new_transaction(self, sender: int, recipient: str, amount: int) -> int:
+    def create_new_transaction(self, sender: str, recipient: str, amount: int) -> int:
         self.current_node_transactions.append(
             Transaction(sender=sender, recipient=recipient, amount=amount)
         )
@@ -61,7 +61,7 @@ class BlockChain:
         return proof
 
     def mine_block(self, miner_address: str) -> SerializedData:
-        self.create_new_transaction(sender=0, recipient=miner_address, amount=1)
+        self.create_new_transaction(sender="0", recipient=miner_address, amount=1)
         last_block = self.last_block
         last_proof = last_block.proof
         proof = self.create_proof_of_work(last_proof)
