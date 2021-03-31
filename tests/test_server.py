@@ -1,4 +1,4 @@
-from .test_helper import send_get_request
+from .test_helper import send_get_request, send_post_request
 
 
 def test_first_chain_data():
@@ -23,3 +23,17 @@ def test_mining():
     response = send_get_request("mine")
     assert response.status_code == 200
     assert previous_hash == response.json["block_data"]["previous_hash"]
+
+
+def test_create_transaction():
+    request_data = {
+        "sender": "addr1",
+        "recipient": "addr2",
+        "amount": 3,
+    }
+    response = send_post_request("create_transaction", request_data)
+    assert response.status_code == 200
+    assert response.json == {
+        "block_index": True,
+        "message": "Transaction has been submitted successfully",
+    }
