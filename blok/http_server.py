@@ -10,7 +10,7 @@ blockchain = BlockChain()
 node_address = uuid4().hex
 
 
-@app.route("/create_transaction/", methods=["POST"])  # type: ignore
+@app.route("/create_transaction/", methods=["POST"])
 def create_transaction() -> Response:
     transaction_data = get_request_data()
     block_index = blockchain.create_new_transaction(**transaction_data)
@@ -21,7 +21,7 @@ def create_transaction() -> Response:
     return get_json_response(response_data)
 
 
-@app.route("/mine/", methods=["GET"])  # type: ignore
+@app.route("/mine/", methods=["GET"])
 def mine() -> Response:
     block = blockchain.mine_block(node_address)
     response_data = {
@@ -31,9 +31,14 @@ def mine() -> Response:
     return get_json_response(response_data)
 
 
-@app.route("/chain/", methods=["GET"])  # type: ignore
-def get_full_chain():
+@app.route("/chain/", methods=["GET"])
+def chain():
     response_data = {
         "chain": blockchain.serialized_chain,
     }
     return get_json_response(response_data)
+
+
+@app.route("/ping/", methods=["GET"])
+def ping():
+    return "OK!"
