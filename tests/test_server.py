@@ -1,3 +1,5 @@
+from blok.http_server import node_address
+
 from .test_helper import send_get_request, send_post_request
 
 
@@ -29,6 +31,7 @@ def test_mining():
 
 
 def test_create_transaction():
+    # create new transaction
     last_block = get_chain()[-1]
     request_data = {
         "sender": "addr1",
@@ -41,3 +44,22 @@ def test_create_transaction():
         "block_index": last_block["index"] + 1,
         "message": "Transaction has been completed successfully.",
     }
+
+    # mine a new block
+    response = send_get_request("mine")
+    assert response.status_code == 200
+
+    transaction_data = response.json["block_data"]["transactions"]
+    expected_data = [
+        {"amount": 3, "recipient": "addr2", "sender": "addr1"},
+        {
+            "amount": 1,
+            "recipient": node_address,
+            "sender": "0",
+        },
+    ]
+    assert transaction_data == expected_data
+
+    # check the latest block
+    last_block = get_chain()[-1]
+    assert last_block["transactions"] == expected_data
