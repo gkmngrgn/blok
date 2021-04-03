@@ -3,29 +3,32 @@ import typing
 
 import flask
 
-from blok.http_server import app
-
-app.config["SERVER_NAME"] = "0.0.0.0:8080"
-app.config["TESTING"] = True
+from blok.http_server import get_app
 
 
-def get_url(endpoint: str) -> str:
-    with app.app_context():
-        url = flask.url_for(endpoint)
-    return url
+class ServerForTest(object):
+    def __init__(self, port: int):
+        self.app = get_app()
+        self.app.config["SERVER_NAME"] = f"0.0.0.0:{port}"
+        self.app.config["TESTING"] = True
 
+    def get_url(self, endpoint: str) -> str:
+        with self.app.app_context():
+            url = flask.url_for(endpoint)
+        return url
 
-def send_get_request(endpoint: str) -> flask.Response:
-    with app.test_client() as client:
-        response = client.get(get_url(endpoint))
-    return response
+    def send_get_request(self, endpoint: str) -> flask.Response:
+        with self.app.test_client() as client:
+            response = client.get(self.get_url(endpoint))
+        return response
 
-
-def send_post_request(
-    endpoint: str, data: typing.Dict[str, typing.Any]
-) -> flask.Response:
-    with app.test_client() as client:
-        response = client.post(
-            get_url(endpoint), data=json.dumps(data), content_type="application/json"
-        )
-    return response
+    def send_post_request(
+        self, endpoint: str, data: typing.Dict[str, typing.Any]
+    ) -> flask.Response:
+        with self.app.test_client() as client:
+            response = client.post(
+                self.get_url(endpoint),
+                data=json.dumps(data),
+                content_type="application/json",
+            )
+        return response

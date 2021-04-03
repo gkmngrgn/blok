@@ -1,6 +1,6 @@
 from argparse import ArgumentParser, Namespace
 
-from blok.http_server import app
+from blok.http_server import get_app
 
 
 def parse_args() -> Namespace:
@@ -13,4 +13,5 @@ def parse_args() -> Namespace:
 
 if __name__ == "__main__":
     args = parse_args()
+    app = get_app()
     app.run(host=args.bind, port=args.port, debug=args.debug)

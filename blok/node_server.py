@@ -31,6 +31,7 @@ class BlockChain:
     def __init__(self) -> None:
         self.chain: typing.List[Block] = []
         self.current_node_transactions: typing.List[Transaction] = []
+        self.nodes: typing.Set[str] = set()
         self.create_genesis_block()
 
     def create_genesis_block(self) -> None:
@@ -52,6 +53,10 @@ class BlockChain:
             Transaction(sender=sender, recipient=recipient, amount=amount)
         )
         return self.last_block.index + 1
+
+    def create_node(self, address: str) -> bool:
+        self.nodes.add(address)
+        return True
 
     @staticmethod
     def create_proof_of_work(previous_proof: int) -> int:

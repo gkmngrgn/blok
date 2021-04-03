@@ -3,21 +3,29 @@
 A simple Blockchain implementation written in Python. I took advantage of [this article](https://www.gauravvjn.com/building-a-simple-blockchain-in-python-part-2/).
 
 ```ascii
-     ┌──────────────────────────────────────────────┐
-     │ BLOCKCHAIN                                   │
-     ├──────────────────────────────────────────────┤
-┌────┤►chain: List[BLOCK]                           │
-│    │ current_node_transactions: List[TRANSACTION]◄├──────────────────┐
-│    └──────────────────────────────────────────────┘                  │
-│                                                                      │
-│    ┌─────────────────────────────────┐        ┌───────────────────┐  │
-└────┤ BLOCK                           │   ┌────┤ TRANSACTION       ├──┘
-     ├─────────────────────────────────┤   │    ├───────────────────┤
-     │ index: Integer                  │   │    │ sender: String    │
-     │ proof: Integer                  │   │    │ recipient: String │
-     │ previous_hash: String           │   │    │ amount: Integer   │
-     │ transactions: List[TRANSACTION]◄├───┘    └───────────────────┘
-     └─────────────────────────────────┘
+     ┌────────────────────────────────────────────────┐
+     │  BLOCKCHAIN                                    │
+     ├────────────────────────────────────────────────┤
+┌────┤► chain: List[BLOCK]                            │
+│    │                                                │
+│    │  current_node_transactions: List[TRANSACTION] ◄├──────────────┐
+│    │                                                │              │
+│    │  nodes: List[ADDRESS]                         ◄├────┐         │
+│    └────────────────────────────────────────────────┘    │         │
+│                                                          │         │
+│    ┌───────────────────────────────────┐   ┌─────────────┴─────┐   │
+└────┤  BLOCK                            │   │  ADDRESS: String  │   │
+     ├───────────────────────────────────┤   └───────────────────┘   │
+     │  index: Integer                   │                           │
+     │                                   │   ┌─────────────────────┐ │
+     │  proof: Integer                   │ ┌─┤  TRANSACTION        ├─┘
+     │                                   │ │ ├─────────────────────┤
+     │  previous_hash: String            │ │ │  sender: String     │
+     │                                   │ │ │                     │
+     │  transactions: List[TRANSACTION] ◄├─┘ │  recipient: String  │
+     └───────────────────────────────────┘   │                     │
+                                             │  amount: Integer    │
+                                             └─────────────────────┘
 ```
 
 ## Installation
