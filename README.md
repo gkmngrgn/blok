@@ -38,7 +38,8 @@ $ poetry install
 To run unit tests:
 
 ```shell
-$ poetry run pytest
+$ poetry run coverage run -m pytest
+$ poetry run coverage report -m
 ```
 
 To run the blockchain server:
