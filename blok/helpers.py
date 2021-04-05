@@ -18,7 +18,9 @@ def get_neighbour_chains() -> typing.List[SerializedData]:
     chains = []
 
     for node_url in current_app.blockchain.nodes:
-        response = requests.get(f"{node_url}{url_for('get_chain')}").json()
+        response = requests.get(
+            f"{node_url}{url_for('blockchain_api.get_chain')}"
+        ).json()
         chains.append(response["chain"])
 
     return chains

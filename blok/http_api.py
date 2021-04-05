@@ -41,7 +41,7 @@ def register_node():
     response_data = {
         "message": "New node has been added.",
         "node_count": len(current_app.blockchain.nodes),
-        "nodes": list(current_app.blockchain.nodes),
+        "nodes": sorted(current_app.blockchain.nodes),
     }
     return get_json_response(response_data, 201)
 

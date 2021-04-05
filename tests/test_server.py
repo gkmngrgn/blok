@@ -70,16 +70,43 @@ def test_create_transaction():
 
 
 def test_register_node():
-    server1 = ServerForTest(port=8001)
-    # server2 = ServerForTest(port=8002)
+    server = ServerForTest(port=8000)
+    addresses = []
 
-    request_data = {"address": "https://0.0.0.0:8002"}
-    response = server1.send_post_request(
-        "blockchain_api.register_node", data=request_data
-    )
-    assert response.status_code == 201
-    assert response.json == {
-        "message": "New node has been added.",
-        "node_count": 1,
-        "nodes": ["https://0.0.0.0:8002"],
-    }
+    for port in range(8001, 8100):
+        address = f"http://0.0.0.0:{port}"
+        addresses.append(address)
+
+        request_data = {"address": address}
+        response = server.send_post_request(
+            "blockchain_api.register_node", data=request_data
+        )
+
+        assert response.status_code == 201
+        assert response.json == {
+            "message": "New node has been added.",
+            "node_count": len(addresses),
+            "nodes": addresses,
+        }
+
+
+def test_sync_chain():
+    server1 = ServerForTest(port=8001)
+    server2 = ServerForTest(port=8002)
+
+    request_data = {"address": f"http://{server2.get_address()}"}
+    server1.send_post_request("blockchain_api.register_node", data=request_data)
+
+    request_data = {"sender": "addr1", "recipient": "addr2", "amount": 3}
+    server2.send_post_request("blockchain_api.create_transaction", data=request_data)
+    server2.send_get_request("blockchain_api.mine")
+
+    chain1 = get_chain(server1)
+    chain2 = get_chain(server2)
+    assert chain1 != chain2
+
+    server1.send_get_request("blockchain_api.sync_chain")
+
+    chain1 = get_chain(server1)
+    chain2 = get_chain(server2)
+    assert chain1 == chain2

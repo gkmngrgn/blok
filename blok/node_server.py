@@ -30,7 +30,7 @@ class Block:
 class BlockChain:
     def __init__(self) -> None:
         self.chain: typing.List[Block] = []
-        self.current_node_transactions: typing.List[Transaction] = []
+        self.new_transactions: typing.List[Transaction] = []
         self.nodes: typing.Set[str] = set()
         self.create_genesis_block()
 
@@ -42,14 +42,14 @@ class BlockChain:
             index=len(self.chain),
             proof=proof,
             previous_hash=previous_hash,
-            transactions=self.current_node_transactions,
+            transactions=self.new_transactions,
         )
-        self.current_node_transactions = []
+        self.new_transactions = []
         self.chain.append(block)
         return block
 
     def create_new_transaction(self, sender: str, recipient: str, amount: int) -> int:
-        self.current_node_transactions.append(
+        self.new_transactions.append(
             Transaction(sender=sender, recipient=recipient, amount=amount)
         )
         return self.last_block.index + 1
@@ -64,6 +64,9 @@ class BlockChain:
         while (proof + previous_proof) % 7 != 0:
             proof += 1
         return proof
+
+    def get_block(self, block_data: SerializedData) -> Block:
+        return Block(**block_data)
 
     def mine_block(self, miner_address: str) -> SerializedData:
         self.create_new_transaction(sender="0", recipient=miner_address, amount=1)

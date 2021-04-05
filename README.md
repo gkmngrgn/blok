@@ -3,17 +3,17 @@
 A simple Blockchain implementation written in Python. I took advantage of [this article](https://www.gauravvjn.com/building-a-simple-blockchain-in-python-part-2/).
 
 ```ascii
-     ┌────────────────────────────────────────────────┐
-     │  BLOCKCHAIN                                    │
-     ├────────────────────────────────────────────────┤
-┌────┤► chain: List[BLOCK]                            │
-│    │                                                │
-│    │  current_node_transactions: List[TRANSACTION] ◄├──────────────┐
-│    │                                                │              │
-│    │  nodes: List[ADDRESS]                         ◄├────┐         │
-│    └────────────────────────────────────────────────┘    │         │
-│                                                          │         │
-│    ┌───────────────────────────────────┐   ┌─────────────┴─────┐   │
+     ┌─────────────────────────────-─────────┐
+     │  BLOCKCHAIN                           │
+     ├───────────────────────────────-───────┤
+┌────┤► chain: List[BLOCK]                   │
+│    │                                       │
+│    │  new_transactions: List[TRANSACTION] ◄├───────────────────────┐
+│    │                                       │                       │
+│    │  nodes: List[ADDRESS]                ◄├────┐                  │
+│    └───────────────────────────────────────┘    │                  │
+│                                                 │                  │
+│    ┌───────────────────────────────────┐   ┌────┴──────────────┐   │
 └────┤  BLOCK                            │   │  ADDRESS: String  │   │
      ├───────────────────────────────────┤   └───────────────────┘   │
      │  index: Integer                   │                           │

@@ -8,9 +8,14 @@ from blok.http_server import get_app
 
 class ServerForTest(object):
     def __init__(self, port: int):
+        self.port = port
+
         self.app = get_app()
-        self.app.config["SERVER_NAME"] = f"0.0.0.0:{port}"
+        self.app.config["SERVER_NAME"] = self.get_address()
         self.app.config["TESTING"] = True
+
+    def get_address(self) -> str:
+        return f"0.0.0.0:{self.port}"
 
     def get_url(self, endpoint: str) -> str:
         with self.app.app_context():
