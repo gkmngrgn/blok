@@ -57,6 +57,6 @@ $ poetry run pre-commit run --all-files
 
 ## Sources
 
-The best source for me was the blockchain course series in [Coursera]((https://www.coursera.org/specializations/blockchain)).
+The best source for me was the blockchain course series in [Coursera](https://www.coursera.org/specializations/blockchain).
 
 I took advantage of [this article](https://www.gauravvjn.com/building-a-simple-blockchain-in-python-part-2/).
