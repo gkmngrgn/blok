@@ -12,6 +12,14 @@ class Transaction:
     recipient: str
     amount: int
 
+    @classmethod
+    def get_instance(cls, data: SerializedData) -> "Transaction":
+        return cls(**data)
+
+    @property
+    def serialized_data(self) -> SerializedData:
+        return vars(self)
+
 
 @dataclass
 class Block:
@@ -21,10 +29,33 @@ class Block:
     transactions: typing.List[Transaction]
     timestamp: float = time.time()
 
+    @classmethod
+    def get_instance(cls, data: SerializedData) -> "Block":
+        block = cls(
+            index=data["index"],
+            proof=data["proof"],
+            previous_hash=data["previous_hash"],
+            transactions=[
+                Transaction.get_instance(transaction)
+                for transaction in data["transactions"]
+            ],
+            timestamp=data["timestamp"],
+        )
+        return block
+
     @property
     def block_hash(self) -> str:
-        block_string = f"{self.index}{self.proof}{self.previous_hash}{self.transactions}{self.timestamp}"
+        transactions = [
+            transaction.serialized_data for transaction in self.transactions
+        ]
+        block_string = f"{self.index}{self.proof}{self.previous_hash}{transactions}{self.timestamp}"
         return hashlib.sha256(block_string.encode()).hexdigest()
+
+    @property
+    def serialized_data(self) -> SerializedData:
+        data = vars(self)
+        data["block_hash"] = self.block_hash
+        return data
 
 
 class BlockChain:
@@ -35,7 +66,8 @@ class BlockChain:
         self.create_genesis_block()
 
     def create_genesis_block(self) -> None:
-        self.create_new_block(proof=0, previous_hash="0")
+        first_hash = hashlib.sha256("GOEDEV".encode()).hexdigest()
+        self.create_new_block(proof=0, previous_hash=first_hash)
 
     def create_new_block(self, proof: int, previous_hash: str) -> Block:
         block = Block(
@@ -65,9 +97,6 @@ class BlockChain:
             proof += 1
         return proof
 
-    def get_block(self, block_data: SerializedData) -> Block:
-        return Block(**block_data)
-
     def mine_block(self, miner_address: str) -> SerializedData:
         self.create_new_transaction(sender="0", recipient=miner_address, amount=1)
         last_block = self.last_block
@@ -75,9 +104,7 @@ class BlockChain:
         proof = self.create_proof_of_work(last_proof)
         last_hash = last_block.block_hash
         block = self.create_new_block(proof, last_hash)
-        response = vars(block)
-        response["block_hash"] = block.block_hash
-        return response
+        return block.serialized_data
 
     @property
     def last_block(self) -> Block:
@@ -85,4 +112,4 @@ class BlockChain:
 
     @property
     def serialized_chain(self) -> typing.List[SerializedData]:
-        return [vars(block) for block in self.chain]
+        return [block.serialized_data for block in self.chain]

@@ -15,6 +15,7 @@ ipython = "^7.21.0"
 ipdb = "^0.13.7"
 pre-commit = "^2.11.1"
 coverage = "^5.5"
+pytest-flask = "^1.2.0"
 
 [tool.isort]
 ensure_newline_before_comments = true

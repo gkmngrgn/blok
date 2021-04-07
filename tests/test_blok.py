@@ -8,7 +8,10 @@ def test_blockchain():
     last_block = blockchain.last_block
     assert last_block.index == 0
     assert last_block.proof == 0
-    assert last_block.previous_hash == "0"
+    assert (
+        last_block.previous_hash
+        == "d90a95445a5f5ca918dbeb66be74e8004054a5b627ed3fb807f2b8adae4ad03e"
+    )
     assert len(last_block.transactions) == 0
 
     last_proof = last_block.proof

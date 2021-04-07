@@ -1,11 +1,17 @@
-import typing
+import json
 
 import flask
+import pytest
+import requests
+from pytest_flask.live_server import LiveServer
+
+from blok.helpers import SerializedData
+from blok.main import get_app
 
 from .test_helper import ServerForTest
 
 
-def get_chain(server: flask.Flask) -> typing.Dict[str, typing.Any]:
+def get_chain(server: ServerForTest) -> SerializedData:
     response = server.send_get_request("blockchain_api.get_chain")
     assert response.status_code == 200
 
@@ -18,7 +24,10 @@ def test_first_chain_data():
     server = ServerForTest(port=8000)
     block = get_chain(server)[0]
     assert block["index"] == 0
-    assert block["previous_hash"] == "0"
+    assert (
+        block["previous_hash"]
+        == "d90a95445a5f5ca918dbeb66be74e8004054a5b627ed3fb807f2b8adae4ad03e"
+    )
     assert block["proof"] == 0
     assert block["transactions"] == []
 
@@ -90,23 +99,49 @@ def test_register_node():
         }
 
 
-def test_sync_chain():
-    server1 = ServerForTest(port=8001)
-    server2 = ServerForTest(port=8002)
+@pytest.fixture(scope="session")
+def app() -> flask.Flask:
+    return get_app()
 
-    request_data = {"address": f"http://{server2.get_address()}"}
-    server1.send_post_request("blockchain_api.register_node", data=request_data)
 
-    request_data = {"sender": "addr1", "recipient": "addr2", "amount": 3}
-    server2.send_post_request("blockchain_api.create_transaction", data=request_data)
-    server2.send_get_request("blockchain_api.mine")
+def test_sync_chain(live_server: LiveServer) -> None:
+    request_headers = {"Content-Type": "application/json"}
+    request_data_register = {"address": f"http://{live_server.host}:{live_server.port}"}
+    request_data_transactions = [
+        {"sender": "addr1", "recipient": "addr2", "amount": 5},
+        {"sender": "addr2", "recipient": "addr1", "amount": 10},
+        {"sender": "addr1", "recipient": "addr2", "amount": 15},
+        {"sender": "addr1", "recipient": "addr3", "amount": 20},
+        {"sender": "addr3", "recipient": "addr2", "amount": 25},
+    ]
 
-    chain1 = get_chain(server1)
-    chain2 = get_chain(server2)
-    assert chain1 != chain2
+    # create a transaction in live server
+    for transaction in request_data_transactions:
+        response = requests.post(
+            url=flask.url_for("blockchain_api.create_transaction", _external=True),
+            data=json.dumps(transaction),
+            headers=request_headers,
+        )
+        assert response.status_code == 201
 
-    server1.send_get_request("blockchain_api.sync_chain")
+    response = requests.get(flask.url_for("blockchain_api.mine", _external=True))
+    assert response.status_code == 200
 
-    chain1 = get_chain(server1)
-    chain2 = get_chain(server2)
-    assert chain1 == chain2
+    response = requests.get(flask.url_for("blockchain_api.get_chain", _external=True))
+    assert response.status_code == 200
+
+    live_chain = response.json()["chain"]
+
+    # open multiple server and sync the live chain
+    for port in range(8001, 8100):
+        server = ServerForTest(port=port)
+        server.send_post_request(
+            "blockchain_api.register_node", data=request_data_register
+        )
+        chain = get_chain(server)
+        assert chain != live_chain
+
+        server.send_get_request("blockchain_api.sync_chain")
+
+        chain = get_chain(server)
+        assert chain == live_chain

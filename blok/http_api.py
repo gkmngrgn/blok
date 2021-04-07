@@ -1,6 +1,7 @@
 from flask import Blueprint, Response, current_app
 
 from blok.helpers import get_json_response, get_neighbour_chains, get_request_data
+from blok.node_server import Block
 
 api = Blueprint("blockchain_api", __name__)
 
@@ -27,7 +28,7 @@ def mine() -> Response:
 
 
 @api.route("/chain/", methods=["GET"])
-def get_chain():
+def get_chain() -> Response:
     response_data = {
         "chain": current_app.blockchain.serialized_chain,
     }
@@ -35,7 +36,7 @@ def get_chain():
 
 
 @api.route("/register_node/", methods=["POST"])
-def register_node():
+def register_node() -> Response:
     node_data = get_request_data()
     current_app.blockchain.create_node(node_data.get("address"))
     response_data = {
@@ -47,14 +48,12 @@ def register_node():
 
 
 @api.route("/sync_chain/", methods=["GET"])
-def sync_chain():
+def sync_chain() -> Response:
     chains = get_neighbour_chains()
-    longest_chain = max(chains, key=len) if chains else None
-    if longest_chain is not None and len(current_app.blockchain.chain) < len(
-        longest_chain
-    ):
+    longest_chain = max(chains, key=len) if chains else []
+    if len(current_app.blockchain.chain) < len(longest_chain):
         current_app.blockchain.chain = [
-            current_app.blockchain.get_block(block) for block in longest_chain
+            Block.get_instance(block_data) for block_data in longest_chain
         ]
     response_data = {"chain": current_app.blockchain.serialized_chain}
     return get_json_response(response_data, 200)
