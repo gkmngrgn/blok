@@ -1,6 +1,6 @@
 # BLOK
 
-A simple Blockchain implementation written in Python. I took advantage of [this article](https://www.gauravvjn.com/building-a-simple-blockchain-in-python-part-2/).
+A simple Blockchain implementation written in Python.
 
 ```ascii
      ┌─────────────────────────────-─────────┐
@@ -54,3 +54,9 @@ $ poetry run python -m blok.main --debug=true
 $ poetry run pre-commit install
 $ poetry run pre-commit run --all-files
 ```
+
+## Sources
+
+The best source for me was the blockchain course series in [Coursera]((https://www.coursera.org/specializations/blockchain)).
+
+I took advantage of [this article](https://www.gauravvjn.com/building-a-simple-blockchain-in-python-part-2/).
