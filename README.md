@@ -3,9 +3,9 @@
 A simple Blockchain implementation written in Python.
 
 ```ascii
-     ┌─────────────────────────────-─────────┐
+     ┌───────────────────────────────────────┐
      │  BLOCKCHAIN                           │
-     ├───────────────────────────────-───────┤
+     ├───────────────────────────────────────┤
 ┌────┤► chain: List[BLOCK]                   │
 │    │                                       │
 │    │  new_transactions: List[TRANSACTION] ◄├───────────────────────┐
